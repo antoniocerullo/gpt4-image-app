@@ -1,7 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional, Annotated
-import openai
+from openai import OpenAI
 import base64
 import os
 import traceback
@@ -19,7 +19,8 @@ app.add_middleware(
 )
 
 # API key di OpenAI da variabile d’ambiente
-openai.api_key = os.getenv("OPENAI_API_KEY")
+#openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Route /chat
 @app.post("/chat")
@@ -34,29 +35,29 @@ async def chat(
     
     if not text and not image:
         return {"response": "Inserisci almeno testo o immagine"}
-
-    messages = []
-
-    if text:
-        messages.append({"type": "text", "text": text})
-
-    if image:
-        content = await image.read()
-        base64_img = base64.b64encode(content).decode("utf-8")
-        image_url = f"data:{image.content_type};base64,{base64_img}"
-        messages.append({
-            "type": "image_url",
-            "image_url": {"url": image_url}
-        })
-
     try:
-        completion = openai.ChatCompletion.create(
+           if image:
+            content = await image.read()
+            base64_img = base64.b64encode(content).decode("utf-8")
+            image_url = f"data:{image.content_type};base64,{base64_img}"
+            messages = [{
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": text or ""},
+                    {"type": "image_url", "image_url": {"url": image_url}}
+                ]
+            }]
+        else:
+            messages = [{"role": "user", "content": text}]
+
+        response = client.chat.completions.create(
             model="gpt-4o",
-            messages=[{"role": "user", "content": messages}],
+            messages=messages,
             max_tokens=1000
         )
-        reply = completion.choices[0].message["content"]
-        return {"response": reply}
+
+        return {"response": response.choices[0].message.content}
+   
     except Exception as e:
         print("❌ Errore durante la richiesta a OpenAI:")
         traceback.print_exc()
