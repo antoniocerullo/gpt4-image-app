@@ -4,6 +4,7 @@ from typing import Optional, Annotated
 import openai
 import base64
 import os
+import traceback
 
 # Inizializza FastAPI
 app = FastAPI()
@@ -57,5 +58,6 @@ async def chat(
         reply = completion.choices[0].message["content"]
         return {"response": reply}
     except Exception as e:
-        print("Errore OpenAI:", e)
-        return {"response": "Errore durante la richiesta a OpenAI"}
+        print("❌ Errore durante la richiesta a OpenAI:")
+        traceback.print_exc()
+        return {"response": f"Errore durante la richiesta a OpenAI: {str(e)}"}
