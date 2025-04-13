@@ -5,19 +5,22 @@ import openai
 import base64
 import os
 
-# CORS
+# Inizializza FastAPI
 app = FastAPI()
+
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # per lo sviluppo, puoi restringere in produzione
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# OpenAI API key da variabile d'ambiente
+# API key di OpenAI da variabile d’ambiente
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+# Route /chat
 @app.post("/chat")
 async def chat(
     text: Optional[str] = Form(None),
