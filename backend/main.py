@@ -50,7 +50,7 @@ async def chat(
 
     try:
         completion = openai.ChatCompletion.create(
-            model="gpt-4-vision-preview",
+            model="gpt-4o",
             messages=[{"role": "user", "content": messages}],
             max_tokens=1000
         )
