@@ -26,6 +26,11 @@ async def chat(
     text: Optional[str] = Form(None),
     image: Optional[UploadFile] = File(None)
 ):
+    
+    print("📥 Ricevuto:")
+    print(f"text: {text}")
+    print(f"image: {image.filename if image else 'nessuna immagine'}")
+    
     if not text and not image:
         return {"response": "Inserisci almeno testo o immagine"}
 
