@@ -41,21 +41,3 @@ async def chat(text: str = Form(...), image: UploadFile = File(...)):
     reply = response.choices[0].message["content"]
     return {"response": reply}
 
-
-# backend/requirements.txt
-fastapi
-uvicorn
-python-multipart
-openai
-
-
-# backend/render.yaml
-services:
-  - type: web
-    name: gpt4-backend
-    env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "uvicorn main:app --host 0.0.0.0 --port 10000"
-    plan: free
-    region: frankfurt
-
