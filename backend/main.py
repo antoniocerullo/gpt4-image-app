@@ -36,7 +36,7 @@ async def chat(
     if not text and not image:
         return {"response": "Inserisci almeno testo o immagine"}
     try:
-           if image:
+        if image:
             content = await image.read()
             base64_img = base64.b64encode(content).decode("utf-8")
             image_url = f"data:{image.content_type};base64,{base64_img}"
