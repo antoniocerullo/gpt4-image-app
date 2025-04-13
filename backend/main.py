@@ -1,6 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional
+from typing import Optional, Annotated
 import openai
 import base64
 import os
@@ -23,8 +23,8 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # Route /chat
 @app.post("/chat")
 async def chat(
-    text: Optional[str] = Form(None),
-    image: Optional[UploadFile] = File(None)
+    text: Annotated[Optional[str], Form()] = None,
+    image: Annotated[Optional[UploadFile], File()] = None
 ):
     
     print("📥 Ricevuto:")
